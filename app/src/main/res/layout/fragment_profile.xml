@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ProfileFragment">
+
+    <TextView
+        android:id="@+id/txtProfileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/profile_fragment"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/txtProfileEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_60sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10ssp"
+        android:layout_alignTop="@+id/txtProfileName"
+        android:text="@string/profile_fragment"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_15ssp" />
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/txtProfileEmail"
+        android:layout_marginTop="@dimen/_370sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:text="@string/logout"
+        android:textSize="@dimen/_20ssp"
+        android:elevation="@dimen/_10sdp"/>
+
+</RelativeLayout>

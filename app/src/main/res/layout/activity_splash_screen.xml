@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutSplashScreen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.SplashScreen"
+    android:background="@drawable/background_bg">
+
+    <ImageView
+        android:id="@+id/imgSSicon"
+        android:layout_width="146dp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/_100sdp"
+        android:layout_marginEnd="@dimen/_100sdp"
+        android:layout_marginBottom="@dimen/_300sdp"
+        android:src="@drawable/bookshelf" />
+
+    <TextView
+        android:id="@+id/txtSStext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_40ssp"
+        android:fontFamily="@font/playlist"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_200sdp">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/txtSSsubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/therapy_for_your_soul"
+        android:fontFamily="@font/raleway"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_25ssp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_150sdp">
+
+    </TextView>
+
+</RelativeLayout>

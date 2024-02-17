@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/FirstItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/firstitem"
+        android:textSize="@dimen/_15ssp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
+    <TextView
+        android:id="@+id/SecondItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/seconditem"
+        android:textSize="@dimen/_15ssp"
+        android:textAlignment="center"/>
+
+</LinearLayout>
