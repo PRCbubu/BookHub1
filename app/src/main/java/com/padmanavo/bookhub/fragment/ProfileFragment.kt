@@ -22,6 +22,12 @@ class ProfileFragment : Fragment()
     private lateinit var gso: GoogleSignInOptions
     private lateinit var gsc: GoogleSignInClient
 
+    companion object {
+        private const val SHARED_PREFS_FILE = "LoginPrefs"
+        private const val LOGIN_TIMESTAMP_KEY = "loginTimestamp"
+        private const val INACTIVITY_THRESHOLD_DAYS = 30
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
 
@@ -46,11 +52,12 @@ class ProfileFragment : Fragment()
         return view
     }
 
-    private fun signOut()
+    fun signOut()
     {
         gsc.signOut().addOnCompleteListener(OnCompleteListener {
             requireActivity().finish()
             startActivity(Intent(requireActivity(), LoginSignupActivity::class.java))
         })
     }
+
 }

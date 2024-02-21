@@ -32,16 +32,16 @@ class DashboardRecyclerAdapter (private val context: Context, private val itemLi
 
     override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) {
         val book = itemList[position]
-        holder.txtBookName.text = book.bookName
-        holder.txtBookAuthor.text = book.bookAuthor
-        holder.txtBookPrice.text = book.bookPrice
-        holder.txtBookRating.text = book.bookRating
+        holder.txtBookName.text = book.volumeInfo.title
+        holder.txtBookAuthor.text = book.volumeInfo.description
+        holder.txtBookPrice.text = 123.toString()
+        holder.txtBookRating.text = book.volumeInfo.ratingsCount.toString()
 
-        Picasso.get().load(book.bookImage).error(R.drawable.default_book_cover)
+        Picasso.get().load(book.selfLink).error(R.drawable.default_book_cover)
             .into(holder.imgBookImage)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DescriptionActivity::class.java)
-            intent.putExtra("book_id", book.bookId)
+            intent.putExtra("book_id", book.id)
             context.startActivity(intent)
         }
     }

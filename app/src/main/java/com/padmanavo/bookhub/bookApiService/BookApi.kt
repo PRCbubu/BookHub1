@@ -1,12 +1,12 @@
-package com.padmanavo.bookhub.bookApiService
-
-import com.padmanavo.bookhub.model.Book
+import com.padmanavo.bookhub.bookApiService.BooksResponse
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Query
 
-interface BookApi
-{
-    @GET("fetch_books/")
-    fun fetchBooks(@Header("token") token: String): Call<List<Book>>
+interface GoogleBooksService {
+    @GET("volumes")
+    fun searchBooks(
+        @Query("q") query: String,
+        @Query("key") apiKey: String
+    ): Call<BooksResponse> // BooksResponse is the wrapper class for Book objects
 }

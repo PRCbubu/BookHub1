@@ -3,6 +3,7 @@ package com.padmanavo.bookhub.activity
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RotateDrawable
@@ -26,7 +27,6 @@ class SplashScreen : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
 
         CoroutineScope(Dispatchers.Main).launch{
             findViewById<TextView>(R.id.txtSStext).animate().alpha(0f).setStartDelay(1000).duration = 1000

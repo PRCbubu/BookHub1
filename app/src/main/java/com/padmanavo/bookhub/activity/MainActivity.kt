@@ -1,8 +1,10 @@
 package com.padmanavo.bookhub.activity
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
@@ -19,6 +21,8 @@ import com.padmanavo.bookhub.fragment.AboutAppFragment
 import com.padmanavo.bookhub.fragment.DashboardFragment
 import com.padmanavo.bookhub.fragment.FavouritesFragment
 import com.padmanavo.bookhub.fragment.ProfileFragment
+import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity()
 {
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity()
         frameLayout = findViewById(R.id.frame)
         navigationView = findViewById(R.id.navigationView)
         setUpToolbar(toolbar)
+
         openDashboard()
 
         val actionBarDrawerToggle = ActionBarDrawerToggle(this@MainActivity, drawerLayout, R.string.open_drawer, R.string.close_drawer)

@@ -1,22 +1,15 @@
-package com.padmanavo.bookhub.database
-
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface BookDao
-{
-    @Insert
-    fun insertBook(bookEntity: BookEntity)
-
-    @Delete
-    fun deleteBook(bookEntity: BookEntity)
+interface BookDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(books: List<BookEntity>)
 
     @Query("SELECT * FROM books")
-    fun getAllBooks(): List<BookEntity>
+    suspend fun getAllBooks(): List<BookEntity>
 
-    @Query("SELECT * FROM books WHERE book_id == :bookId")
-    fun getBookByID(bookId: String): BookEntity
-}
+    // Add queries for getting a book by ID, deleting, etc. as needed 
+} 
