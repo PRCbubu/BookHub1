@@ -1,5 +1,6 @@
 package com.padmanavo.bookhub.adapter
 
+import BookEntity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -14,7 +15,7 @@ import com.padmanavo.bookhub.activity.DescriptionActivity
 import com.padmanavo.bookhub.model.Book
 import com.squareup.picasso.Picasso
 
-class DashboardRecyclerAdapter (private val context: Context, private val itemList: List<Book>) : RecyclerView.Adapter<DashboardRecyclerAdapter.DashboardViewHolder>()
+class DashboardRecyclerAdapter (private val context: Context, private val itemList: List<BookEntity>) : RecyclerView.Adapter<DashboardRecyclerAdapter.DashboardViewHolder>()
 {
     class DashboardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtBookName: TextView = view.findViewById(R.id.txtBookName)
@@ -33,11 +34,11 @@ class DashboardRecyclerAdapter (private val context: Context, private val itemLi
     override fun onBindViewHolder(holder: DashboardViewHolder, position: Int) {
         val book = itemList[position]
         holder.txtBookName.text = book.volumeInfo.title
-        holder.txtBookAuthor.text = book.volumeInfo.description
-        holder.txtBookPrice.text = 123.toString()
-        holder.txtBookRating.text = book.volumeInfo.ratingsCount.toString()
+        holder.txtBookAuthor.text = book.volumeInfo.authors.toString()
+        //holder.txtBookPrice.text = 123.toString()
+        holder.txtBookRating.text = book.volumeInfo.averageRating.toString()
 
-        Picasso.get().load(book.selfLink).error(R.drawable.default_book_cover)
+        Picasso.get().load(book.volumeInfo.imageLinks?.thumbnail).error(R.drawable.default_book_cover)
             .into(holder.imgBookImage)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DescriptionActivity::class.java)

@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.padmanavo.bookhub.R
-import com.padmanavo.bookhub.adapter.FavouriteRecyclerAdapter
-import com.padmanavo.bookhub.database.BookDatabase
-import com.padmanavo.bookhub.database.BookEntity
-
+import com.padmanavo.bookhub.model.Book
 
 
 class FavouritesFragment : Fragment()
@@ -26,16 +23,15 @@ class FavouritesFragment : Fragment()
     private lateinit var progressLayout: RelativeLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var recyclerAdapter: FavouriteRecyclerAdapter
     private lateinit var txtNofavourite: TextView
-    private var dbBookList = listOf<BookEntity>()
+    private var dbBookList = listOf<Book>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
 
         val view = inflater.inflate(R.layout.fragment_favourites, container, false)
 
-        recyclerFavourite = view.findViewById(R.id.recyclerFavourite)
+        /*recyclerFavourite = view.findViewById(R.id.recyclerFavourite)
         progressLayout = view.findViewById(R.id.progressLayout)
         progressBar = view.findViewById(R.id.progressBar)
         txtNofavourite = view.findViewById(R.id.txtNofavourite)
@@ -60,18 +56,18 @@ class FavouritesFragment : Fragment()
                 recyclerFavourite.layoutManager = layoutManager
             }
 
-        }
+        }*/
 
         return view
     }
 
-    class RetrieveFavourites(val context: Context) : AsyncTask<Void, Void, List<BookEntity>>() {
+    /*class RetrieveFavourites(val context: Context) : AsyncTask<Void, Void, List<BookEntity>>() {
 
         override fun doInBackground(vararg p0: Void?): List<BookEntity> {
             val db = Room.databaseBuilder(context, BookDatabase::class.java, "books-db").build()
             return db.bookDao().getAllBooks()
         }
 
-    }
+    }*/
 
 }

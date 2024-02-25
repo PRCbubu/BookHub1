@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +27,9 @@ import com.padmanavo.bookhub.R
 import com.padmanavo.bookhub.adapter.DashboardRecyclerAdapter
 import com.padmanavo.bookhub.model.Book
 import com.padmanavo.bookhub.util.ConnectionManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Collections
@@ -39,20 +43,20 @@ class DashboardFragment : Fragment()
     private lateinit var progressBar: ProgressBar
     private lateinit var mcontext: Context
 
-    private val YOUR_API_KEY = "AIzaSyBq4xrELO38-V_ypN28dsUrERouJD7jE0Y"
+    //private val YOUR_API_KEY = "AIzaSyBq4xrELO38-V_ypN28dsUrERouJD7jE0Y"
 
     private val retrofit = Retrofit.Builder().baseUrl("https://www.googleapis.com/books/v1/").addConverterFactory(GsonConverterFactory.create()).build()
     private val booksService = retrofit.create(GoogleBooksService::class.java)
 
-    val bookInfoList = arrayListOf<Book>()
-    /*private var ratingComparator = Comparator<Book> { book1, book2 ->
+    val bookInfoList = arrayListOf<BookEntity>()
+    private var ratingComparator = Comparator<BookEntity> { book1, book2 ->
 
-        if (book1.bookRating.compareTo(book2.bookRating, true) == 0) {
-            book1.bookName.compareTo(book2.bookName, true)
+        if (book1.volumeInfo.ratingsCount!!.compareTo(book2.volumeInfo.ratingsCount!!) == 0) {
+            book1.volumeInfo.title.compareTo(book2.volumeInfo.title, true)
         } else {
-            book1.bookRating.compareTo(book2.bookRating, true)
+            book1.volumeInfo.ratingsCount.compareTo(book2.volumeInfo.ratingsCount)
         }
-    }*/
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,29 +81,39 @@ class DashboardFragment : Fragment()
             lifecycleScope.launch{
                 try
                 {
-                    val response = booksService.searchBooks("android", YOUR_API_KEY)
-                    if (response.isSuccessful)
+                    val response = booksService.searchBooks("android", "AIzaSyBq4xrELO38-V_ypN28dsUrERouJD7jE0Y")
+                    withContext(Dispatchers.Main)
                     {
-                        val bookEntities = response.body()?.items?.map { book ->
-                            // Map your Book object from the API response to a BookEntity
-                            BookEntity(
-                                id = book.id,
-                                kind = book.kind,
-                                etag = book.etag,
-                                selfLink = book.selfLink,
-                                volumeInfo = book.volumeInfo
-                            )
-                        } ?: emptyList()
 
+                        if (response.isSuccessful)
+                        {
+                            val bookResponse = response.body()?.items?.map { book ->
+                                // Map your Book object from the API response to a BookEntity
+                                BookEntity(
+                                    kind = book.kind,
+                                    id = book.id,
+                                    etag = book.etag,
+                                    selfLink = book.selfLink,
+                                    volumeInfo = book.volumeInfo
+                                )
+                            } ?: emptyList()
+                            bookInfoList.clear()
+                            bookInfoList.addAll(bookResponse)
+                            recyclerAdapter=DashboardRecyclerAdapter(mcontext, bookInfoList)
+                            recyclerDashboard.adapter=recyclerAdapter
+                            recyclerDashboard.layoutManager=layoutManager
+                            progressLayout.visibility=View.GONE
+                        }
+                        else
+                        {
+                            Toast.makeText(mcontext, "Some Error Occurred !!!", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                    else
-                    {
-                        // Handle error
-                    }
+
                 }
                 catch (e: Exception)
                 {
-                    // Handle network exception
+                    Toast.makeText(mcontext, "Some Error Occurred !!!", Toast.LENGTH_SHORT).show()
                 }
             }
         }

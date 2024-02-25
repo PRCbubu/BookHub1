@@ -1,6 +1,6 @@
 package com.padmanavo.bookhub.adapter
 
-import android.content.Context
+/*import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +10,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.padmanavo.bookhub.R
 import com.padmanavo.bookhub.activity.DescriptionActivity
-import com.padmanavo.bookhub.database.BookEntity
+import com.padmanavo.bookhub.model.Book
 import com.squareup.picasso.Picasso
 
-class FavouriteRecyclerAdapter(val context: Context, private val bookList: List<BookEntity>) :
+class FavouriteRecyclerAdapter(val context: Context, private val bookList: List<Book>) :
     RecyclerView.Adapter<FavouriteRecyclerAdapter.FavouriteViewHolder>() {
 
     class FavouriteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -51,4 +51,4 @@ class FavouriteRecyclerAdapter(val context: Context, private val bookList: List<
     override fun getItemCount(): Int {
         return bookList.size
     }
-}
+}*/

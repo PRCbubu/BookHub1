@@ -1,11 +1,11 @@
 package com.padmanavo.bookhub.activity
 
-import android.content.Context
+import GoogleBooksService
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -16,18 +16,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.room.Room
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
+import androidx.lifecycle.lifecycleScope
 import com.padmanavo.bookhub.R
-import com.padmanavo.bookhub.database.BookDatabase
-import com.padmanavo.bookhub.database.BookEntity
 import com.padmanavo.bookhub.util.ConnectionManager
 import com.squareup.picasso.Picasso
-import org.json.JSONException
-import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 
 class DescriptionActivity : AppCompatActivity()
 {
@@ -42,6 +40,10 @@ class DescriptionActivity : AppCompatActivity()
     private lateinit var progressLayout: RelativeLayout
     private lateinit var toolbar: Toolbar
     private var bookId: String? = "100"
+
+    private val retrofit = Retrofit.Builder().baseUrl("https://www.googleapis.com/books/v1/").addConverterFactory(GsonConverterFactory.create()).build()
+    private val booksService = retrofit.create(GoogleBooksService::class.java)
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
@@ -78,120 +80,33 @@ class DescriptionActivity : AppCompatActivity()
             Toast.makeText(this@DescriptionActivity, "Some unexpected error occurred!", Toast.LENGTH_SHORT).show()
         }
 
-        val queue = Volley.newRequestQueue(this@DescriptionActivity)
-        val url = "http://13.235.250.119/v1/book/get_book/"
-        val jsonParams = JSONObject()
-        jsonParams.put("book_id", bookId)
-
-        if (ConnectionManager().checkConnectivity(this@DescriptionActivity)) {
-            val jsonRequest = object : JsonObjectRequest(Method.POST, url, jsonParams,
-
-                Response.Listener
+        if (ConnectionManager().checkConnectivity(this@DescriptionActivity))
+        {
+            lifecycleScope.launch {
+                try
                 {
-                    try
+                    val response = booksService.getBookById(bookId!!, "AIzaSyBq4xrELO38-V_ypN28dsUrERouJD7jE0Y")
+                    Log.d("API Response", response.body()?.volumeInfo?.imageLinks?.thumbnail.toString())
+                    if(response.isSuccessful)
                     {
-                        val success = it.getBoolean("success")
-                        if (success)
+                        val bookResponse = response.body()
+                        bookResponse?.volumeInfo?.title?.let { Log.d("response", it) }
+                        Picasso.get().load(bookResponse?.volumeInfo?.imageLinks?.thumbnail).error(R.drawable.ic_book).into(imgBookImage)
+                        withContext(Dispatchers.Main)
                         {
-                            val bookJsonObject = it.getJSONObject("book_data")
-                            progressLayout.visibility = View.GONE
-
-                            val bookImageUrl = bookJsonObject.getString("image")
-                            Picasso.get().load(bookJsonObject.getString("image"))
-                                .error(R.drawable.default_book_cover).into(imgBookImage)
-                            txtBookName.text = bookJsonObject.getString("name")
-                            txtBookAuthor.text = bookJsonObject.getString("author")
-                            txtBookPrice.text = bookJsonObject.getString("price")
-                            txtBookRating.text = bookJsonObject.getString("rating")
-                            txtBookDesc.text = bookJsonObject.getString("description")
-
-                            val bookEntity = BookEntity(
-                                bookId?.toInt() as Int,
-                                txtBookName.text.toString(),
-                                txtBookAuthor.text.toString(),
-                                txtBookPrice.text.toString(),
-                                txtBookRating.text.toString(),
-                                txtBookDesc.text.toString(),
-                                bookImageUrl
-                            )
-
-                            val checkFav = DBAsyncTask(applicationContext, bookEntity, 1).execute()
-                            val isFav = checkFav.get()
-
-                            if (isFav)
-                            {
-                                btnAddToFav.text = "Remove from Favourite"
-                                val favColor = ContextCompat.getColor(applicationContext, R.color.colorFavourites)
-                                btnAddToFav.setBackgroundColor(favColor)
-                            }
-                            else
-                            {
-                                btnAddToFav.text = "Add to Favourite"
-                                val noFavColor = ContextCompat.getColor(applicationContext, R.color.teal_700)
-                                btnAddToFav.setBackgroundColor(noFavColor)
-                            }
-
-                            btnAddToFav.setOnClickListener {
-                                if (!DBAsyncTask(applicationContext, bookEntity, 1).execute().get())
-                                {
-                                    val async = DBAsyncTask(applicationContext, bookEntity, 2).execute()
-                                    val result = async.get()
-
-                                    if (result)
-                                    {
-                                        Toast.makeText(this@DescriptionActivity, "Book added to favourites", Toast.LENGTH_SHORT).show()
-
-                                        btnAddToFav.text = "Remove from favourites"
-                                        val favColor = ContextCompat.getColor(applicationContext, R.color.colorFavourites)
-                                        btnAddToFav.setBackgroundColor(favColor)
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(this@DescriptionActivity, "Some error occurred!", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                                else
-                                {
-                                    val async = DBAsyncTask(applicationContext, bookEntity, 3).execute()
-                                    val result = async.get()
-
-                                    if (result)
-                                    {
-                                        Toast.makeText(this@DescriptionActivity, "Book removed from favourites", Toast.LENGTH_SHORT).show()
-
-                                        btnAddToFav.text = "Add to favourites"
-                                        val noFavColor = ContextCompat.getColor(applicationContext, R.color.teal_700)
-                                        btnAddToFav.setBackgroundColor(noFavColor)
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(this@DescriptionActivity, "Some error occurred!", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
+                            txtBookName.text = bookResponse?.volumeInfo?.title.toString()
+                            txtBookAuthor.text = bookResponse?.volumeInfo?.authors.toString()
+                            txtBookDesc.text = bookResponse?.volumeInfo?.description
 
                         }
-                        else
-                        {
-                            Toast.makeText(this@DescriptionActivity, "Some Error Occurred !", Toast.LENGTH_SHORT).show()
-                        }
                     }
-                    catch (e: JSONException)
-                    {
-                        Toast.makeText(this@DescriptionActivity, "Some error occurred!!! ", Toast.LENGTH_SHORT).show()
-                    }
-                },
-                Response.ErrorListener { })
-            {
-                override fun getHeaders(): MutableMap<String, String>
+                    progressLayout.visibility = View.GONE
+                }
+                catch (e: Exception)
                 {
-                    val headers = HashMap<String, String>()
-                    headers["Content-type"] = "application/json"
-                    headers["token"] = "5c947d4be3f496"
-                    return headers
+                    Toast.makeText(applicationContext, e.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
-            queue.add(jsonRequest)
         }
         else
         {
@@ -209,7 +124,7 @@ class DescriptionActivity : AppCompatActivity()
         }
     }
 
-    class DBAsyncTask(val context: Context, private val bookEntity: BookEntity, private val mode: Int) : AsyncTask<Void, Void, Boolean>()
+    /*class DBAsyncTask(val context: Context, private val bookEntity: BookEntity, private val mode: Int) : AsyncTask<Void, Void, Boolean>()
     {
         /*
         Mode 1 -> Check DB if the book is favourite or not
@@ -246,5 +161,5 @@ class DescriptionActivity : AppCompatActivity()
             return false
         }
 
-    }
+    }*/
 }
